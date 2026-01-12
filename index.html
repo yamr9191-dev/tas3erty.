@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>ts3erty | تسعير ذكي</title>
+<!-- كود التحقق من ملكية الموقع لجوجل -->
+<meta name="google-site-verification" content="هنا_تحط_الكود_اللي_جوجل_اديه_لك">
+<style>
+*{box-sizing:border-box;font-family:Arial}
+body{background:#1e293b;color:#fff;direction:rtl;margin:0;transition: background 0.3s;}
+header{padding:20px;text-align:center;background:#0f172a;transition: background 0.3s}
+header h1{color:#f1c40f;margin:0;}
+header p{margin:5px 0;color:#38bdf8}
+.container{max-width:700px;margin:30px auto;padding:20px}
+.card{background:#0f172a;border-radius:15px;padding:20px;margin-bottom:20px;box-shadow:0 10px 25px rgba(0,0,0,.4);transition: transform 0.3s, box-shadow 0.3s;}
+.card:hover{transform: translateY(-5px);box-shadow:0 15px 30px rgba(0,0,0,.5);}
+h2{margin-top:0;color:#38bdf8}
+input, select{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:none;font-size:16px;background:#1e293b;color:#fff;transition: background 0.3s,color 0.3s}
+input:focus, select:focus{outline:none;background:#2c3e50}
+button{width:100%;padding:14px;border-radius:12px;border:none;background:#38bdf8;color:#0f172a;font-size:18px;cursor:pointer;font-weight:bold;transition: background 0.3s, transform 0.2s}
+button:hover{background:#0ea5e9;transform: scale(1.03);}
+.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px;opacity:0;transform: translateY(20px);transition: opacity 0.5s, transform 0.5s}
+.results.show{opacity:1;transform: translateY(0);}
+.result-box{background:#0f172a;border-radius:15px;padding:20px;text-align:center;border:1px solid #1e293b;transition: transform 0.3s, background 0.3s}
+.result-box:hover{transform: translateY(-3px);background:#1c2a3b}
+.value{font-size:22px;color:#22c55e;margin-top:10px;transition: color 0.3s}
+.note{margin-top:10px;color:#facc15;font-size:14px;transition: color 0.3s}
+.advice{background:#0f172a;border:1px dashed #38bdf8;padding:15px;border-radius:12px;color:#e5e7eb;opacity:0;transform: translateY(10px);transition: opacity 0.5s, transform 0.5s;}
+.advice.show{opacity:1;transform: translateY(0);}
+footer{text-align:center;color:#94a3b8;margin-top:40px;transition: color 0.3s}
+footer a{color:#38bdf8;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+<h1>ts3erty</h1>
+<p>تسعير ذكي للمنتجات الجديدة والمستهلكة – بيع أسرع وبيع مضمون</p>
+</header>
+
+<div class="container">
+<div class="card">
+<h2>بيانات المنتج</h2>
+<select id="productType">
+  <option value="consumer">منتج مستهلك</option>
+  <option value="new">منتج جديد</option>
+</select>
+<input id="price" type="number" placeholder="سعر الشراء للوحدة أو الكرتونة">
+<input id="quantity" type="number" placeholder="عدد الوحدات (1 لو قطعة واحدة)">
+<input id="market" type="number" placeholder="سعر السوق للوحدة">
+<button onclick="calculate()">احسب التسعير والربح</button>
+</div>
+
+<div class="card results" id="results"></div>
+<div class="card advice" id="advice"></div>
+</div>
+
+<footer>
+صلي على النبي ﷺ — ts3erty © 2026 <br>
+دعم مباشر: <a href="https://t.me/Youssef_210" target="_blank">@Youssef_210</a>
+</footer>
+
+<script>
+function calculate(){
+let price = Number(document.getElementById('price').value);
+let quantity = Number(document.getElementById('quantity').value);
+let market = Number(document.getElementById('market').value);
+let type = document.getElementById('productType').value;
+
+if(!price || !quantity || !market){ alert('من فضلك املأ كل البيانات'); return; }
+
+let unitCost = price / quantity;
+
+// نسب الربح حسب نوع المنتج
+let fastMultiplier, marketMultiplier, highMultiplier;
+if(type==='consumer'){
+  fastMultiplier=0.88; marketMultiplier=0.96; highMultiplier=1.0;
+} else {
+  fastMultiplier=0.92; marketMultiplier=0.98; highMultiplier=1.05;
+}
+
+let fastPrice = market * fastMultiplier; if(fastPrice < unitCost) fastPrice = unitCost*1.05;
+let marketPrice = market * marketMultiplier;
+let highPrice = market * highMultiplier;
+
+let fastProfit = (fastPrice - unitCost)*quantity;
+let marketProfit = (marketPrice - unitCost)*quantity;
+let highProfit = (highPrice - unitCost)*quantity;
+
+let fastPercent = ((fastPrice-unitCost)/unitCost*100).toFixed(1);
+let marketPercent = ((marketPrice-unitCost)/unitCost*100).toFixed(1);
+let highPercent = ((highPrice-unitCost)/unitCost*100).toFixed(1);
+
+let html = '';
+if(quantity === 1){
+  html += `<div class="result-box"><h3>بيع سريع</h3><div class="value">${fastPrice.toFixed(2)} جنيه</div><div class="note">ربح: ${fastProfit.toFixed(2)} جنيه | نسبة: ${fastPercent}%</div></div>`;
+  html += `<div class="result-box"><h3>بيع آمن</h3><div class="value">${marketPrice.toFixed(2)} جنيه</div><div class="note">ربح: ${marketProfit.toFixed(2)} جنيه | نسبة: ${marketPercent}%</div></div>`;
+  html += `<div class="result-box"><h3>بيع أعلى</h3><div class="value">${highPrice.toFixed(2)} جنيه</div><div class="note">ربح: ${highProfit.toFixed(2)} جنيه | نسبة: ${highPercent}%</div></div>`;
+}else{
+  html += `<div class="result-box"><h3>بيع سريع (الوحدة)</h3><div class="value">${fastPrice.toFixed(2)} جنيه</div><div class="note">ربح: ${fastProfit.toFixed(2)} جنيه | نسبة: ${fastPercent}%</div></div>`;
+  html += `<div class="result-box"><h3>بيع آمن (الوحدة)</h3><div class="value">${marketPrice.toFixed(2)} جنيه</div><div class="note">ربح: ${marketProfit.toFixed(2)} جنيه | نسبة: ${marketPercent}%</div></div>`;
+  html += `<div class="result-box"><h3>بيع أعلى (الوحدة)</h3><div class="value">${highPrice.toFixed(2)} جنيه</div><div class="note">ربح: ${highProfit.toFixed(2)} جنيه | نسبة: ${highPercent}%</div></div>`;
+  html += `<div class="result-box"><h3>المكسب الإجمالي للكمية</h3><div class="value">${(fastProfit+marketProfit+highProfit).toFixed(2)} جنيه</div></div>`;
+}
+
+document.getElementById('results').innerHTML = html;
+document.getElementById('results').classList.add('show');
+document.getElementById('advice').classList.add('show');
+document.getElementById('advice').innerHTML=`<b>نصيحة ts3erty:</b><br>- اختار السعر حسب رغبتك بالسيولة أو الربح الأعلى<br><b>صلي على النبي ﷺ</b>`;
+}
+</script>
+</body>
+</html>
